@@ -1,3 +1,4 @@
+```bash
 #!/bin/bash
 
 echo "========================================"
@@ -5,8 +6,8 @@ echo "     Minikube Automation Script"
 echo "========================================"
 echo
 echo "Enter Your Method:"
-echo "[1] Install Minikube & kubectl"
-echo "[2] Remove Minikube & kubectl"
+echo "[1] Install Minikube, kubectl & Docker"
+echo "[2] Remove Minikube, kubectl & Docker"
 echo "[3] Help Menu"
 read -r method
 
@@ -16,7 +17,7 @@ echo "Entered Method: $method"
 case "$method" in
 
     1)
-        echo "Installing Minikube & kubectl..."
+        echo "Installing Minikube, kubectl & Docker..."
         echo
         echo "Enter Your Linux Distribution:"
         echo "[1] Debian/Ubuntu"
@@ -58,10 +59,36 @@ case "$method" in
                         curl \
                         gpg
 
+                    # ========================================
+                    # Docker Installation
+                    # ========================================
+
+                    echo
+                    echo "Installing Docker..."
+
+                    sudo apt-get install -y docker.io
+
+                    echo
+                    echo "Enabling Docker service..."
+
+                    sudo systemctl enable --now docker
+
+                    echo
+                    echo "Adding user '$user' to docker group..."
+
+                    sudo usermod -aG docker "$user"
+
+                    echo
+                    echo "Docker version:"
+                    docker --version
+
                     # Create keyring directory
                     sudo mkdir -p /etc/apt/keyrings
 
-                    # Kubernetes repository key
+                    # ========================================
+                    # Kubernetes Repository
+                    # ========================================
+
                     echo
                     echo "Adding Kubernetes repository..."
 
@@ -75,6 +102,10 @@ case "$method" in
 
                     sudo apt-get update
 
+                    # ========================================
+                    # kubectl Installation
+                    # ========================================
+
                     echo
                     echo "Installing kubectl..."
                     sudo apt-get install -y kubectl
@@ -83,7 +114,10 @@ case "$method" in
                     echo "kubectl version:"
                     kubectl version --client
 
-                    # Minikube installation
+                    # ========================================
+                    # Minikube Installation
+                    # ========================================
+
                     echo
                     echo "Installing Minikube..."
 
@@ -99,7 +133,16 @@ case "$method" in
                     echo "Minikube version:"
                     minikube version
 
-                    # Automation script setup
+                    # Configure Docker driver
+                    echo
+                    echo "Configuring Minikube to use Docker..."
+
+                    sudo -u "$user" minikube config set driver docker
+
+                    # ========================================
+                    # Automation Script Setup
+                    # ========================================
+
                     if [ -f "kube" ]; then
                         echo
                         echo "Installing kube automation command..."
@@ -118,6 +161,19 @@ case "$method" in
                     echo "========================================"
                     echo "Installation Completed Successfully!"
                     echo "========================================"
+                    echo
+                    echo "Docker: Installed"
+                    echo "kubectl: Installed"
+                    echo "Minikube: Installed"
+                    echo "Minikube Driver: Docker"
+                    echo
+                    echo "IMPORTANT:"
+                    echo "Log out and log back in for the docker group"
+                    echo "permission to take effect."
+                    echo
+                    echo "Then you can run:"
+                    echo "  minikube start"
+                    echo
 
                 elif [ "$check" -eq 2 ]; then
                     echo "Re-run this script and enter the correct username."
@@ -156,7 +212,33 @@ case "$method" in
                     echo "Installing required packages..."
                     sudo dnf install -y wget curl
 
-                    # Minikube installation
+                    # ========================================
+                    # Docker Installation
+                    # ========================================
+
+                    echo
+                    echo "Installing Docker..."
+
+                    sudo dnf install -y docker
+
+                    echo
+                    echo "Enabling Docker service..."
+
+                    sudo systemctl enable --now docker
+
+                    echo
+                    echo "Adding user '$user' to docker group..."
+
+                    sudo usermod -aG docker "$user"
+
+                    echo
+                    echo "Docker version:"
+                    docker --version
+
+                    # ========================================
+                    # Minikube Installation
+                    # ========================================
+
                     echo
                     echo "Installing Minikube..."
 
@@ -168,7 +250,10 @@ case "$method" in
 
                     sudo dnf install -y ./package/minikube-latest.x86_64.rpm
 
-                    # Kubernetes repository
+                    # ========================================
+                    # Kubernetes Repository
+                    # ========================================
+
                     echo
                     echo "Adding Kubernetes repository..."
 
@@ -180,6 +265,10 @@ enabled=1
 gpgcheck=1
 gpgkey=https://pkgs.k8s.io/core:/stable:/v1.34/rpm/repodata/repomd.xml.key
 EOF
+
+                    # ========================================
+                    # kubectl Installation
+                    # ========================================
 
                     echo
                     echo "Installing kubectl..."
@@ -193,7 +282,16 @@ EOF
                     echo "Minikube version:"
                     minikube version
 
-                    # Automation script setup
+                    # Configure Docker driver
+                    echo
+                    echo "Configuring Minikube to use Docker..."
+
+                    sudo -u "$user" minikube config set driver docker
+
+                    # ========================================
+                    # Automation Script Setup
+                    # ========================================
+
                     if [ -f "kube" ]; then
                         echo
                         echo "Installing kube automation command..."
@@ -212,6 +310,19 @@ EOF
                     echo "========================================"
                     echo "Installation Completed Successfully!"
                     echo "========================================"
+                    echo
+                    echo "Docker: Installed"
+                    echo "kubectl: Installed"
+                    echo "Minikube: Installed"
+                    echo "Minikube Driver: Docker"
+                    echo
+                    echo "IMPORTANT:"
+                    echo "Log out and log back in for the docker group"
+                    echo "permission to take effect."
+                    echo
+                    echo "Then you can run:"
+                    echo "  minikube start"
+                    echo
 
                 elif [ "$check" -eq 2 ]; then
                     echo "Re-run this script and enter the correct username."
@@ -229,7 +340,7 @@ EOF
         ;;
 
     2)
-        echo "Removing Minikube & kubectl..."
+        echo "Removing Minikube, kubectl & Docker..."
         echo
         echo "Enter Your Linux Distribution:"
         echo "[1] Debian/Ubuntu"
@@ -242,11 +353,23 @@ EOF
                 echo "Entered Type: Debian/Ubuntu"
                 echo "Removing..."
 
-                sudo apt-get remove -y minikube kubectl
+                # Stop Minikube
+                if command -v minikube &>/dev/null; then
+                    minikube delete --all
+                fi
 
+                # Remove packages
+                sudo apt-get remove -y minikube kubectl docker.io
+
+                # Remove binaries
                 sudo rm -f /usr/local/bin/minikube
                 sudo rm -f /usr/local/bin/kubectl
 
+                # Remove Docker data
+                sudo rm -rf /var/lib/docker
+                sudo rm -rf /var/lib/containerd
+
+                # Remove Minikube data
                 rm -rf "$HOME/.minikube"
 
                 # Remove Kubernetes repository
@@ -263,11 +386,23 @@ EOF
                 echo "Entered Type: RedHat/RHEL/Fedora"
                 echo "Removing..."
 
-                sudo dnf remove -y minikube kubectl
+                # Stop Minikube
+                if command -v minikube &>/dev/null; then
+                    minikube delete --all
+                fi
 
+                # Remove packages
+                sudo dnf remove -y minikube kubectl docker
+
+                # Remove binaries
                 sudo rm -f /usr/local/bin/minikube
                 sudo rm -f /usr/local/bin/kubectl
 
+                # Remove Docker data
+                sudo rm -rf /var/lib/docker
+                sudo rm -rf /var/lib/containerd
+
+                # Remove Minikube data
                 rm -rf "$HOME/.minikube"
 
                 # Remove Kubernetes repository
@@ -290,8 +425,8 @@ EOF
         echo "              Help Menu"
         echo "========================================"
         echo
-        echo "1. Install Minikube and kubectl"
-        echo "2. Remove Minikube and kubectl"
+        echo "1. Install Minikube, kubectl and Docker"
+        echo "2. Remove Minikube, kubectl and Docker"
         echo "3. Display this help menu"
         echo
         echo "Before installation:"
@@ -299,6 +434,7 @@ EOF
         echo "- Make sure the Minikube package exists."
         echo "- Make sure the 'kube' file exists if you want"
         echo "  the automation command installed."
+        echo "- Docker will be installed automatically."
         ;;
 
     *)
@@ -307,3 +443,4 @@ EOF
         ;;
 
 esac
+```
