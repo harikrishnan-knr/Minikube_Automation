@@ -1,0 +1,37 @@
+#!/bin/bash
+echo "Minikube Script..."
+# It is a minikube setup config file
+if [ "$1" == "start" ]; then
+# Minikube stating command
+minikube start \
+  --driver=docker \
+  --cpus=2 \
+  --memory=3072 \
+  --disk-size=30g
+echo "Minikube Server Started..."
+# Minikube status command
+minikube status
+
+elif [ "$1" == "stop" ]; then
+# Minikube delete command
+minikube delete
+echo "Minikube Server Deleted..."
+# Minikube status command
+minikube status
+
+elif [ "$1" == "help" ]; then
+echo "It is a custom made script to automate the minikube server..."
+echo "Help Menu"
+echo "[1] start -> Start The Server" 
+echo "[2] stop  -> Stop The Server"
+echo "[3] help  -> Help Menu"
+
+else
+# Error message
+echo "Error..."
+echo "Argument Command Missing..."
+echo "Help Menu"
+echo "[1] start -> Start The Server" 
+echo "[2] stop  -> Stop The Server"
+echo "[3] help  -> Help Menu"
+fi
