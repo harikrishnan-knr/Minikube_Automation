@@ -43,7 +43,7 @@ Minikube_automation/
 2. Make the scripts executable:
 
    ```bash
-   chmod +x setup.sh kube
+   chmod +x setup.sh
    ```
 
 3. Run the setup script:
