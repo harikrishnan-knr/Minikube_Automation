@@ -19,12 +19,17 @@ echo "Minikube Server Deleted..."
 # Minikube status command
 minikube status
 
+elif [ "$1" == "status" ]; then
+# Minikube status command
+minikube status
+
 elif [ "$1" == "help" ]; then
 echo "It is a custom made script to automate the minikube server..."
 echo "Help Menu"
-echo "[1] start -> Start The Server" 
-echo "[2] stop  -> Stop The Server"
-echo "[3] help  -> Help Menu"
+echo "[1] start  -> Start The Server" 
+echo "[2] stop   -> Stop The Server"
+echo "[3] status -> Status Of the Server"
+echo "[4] help  -> Help Menu"
 
 else
 # Error message
@@ -33,5 +38,6 @@ echo "Argument Command Missing..."
 echo "Help Menu"
 echo "[1] start -> Start The Server" 
 echo "[2] stop  -> Stop The Server"
-echo "[3] help  -> Help Menu"
+echo "[3] status -> Status Of the Server"
+echo "[4] help  -> Help Menu"
 fi
