@@ -29,15 +29,15 @@ echo "Help Menu"
 echo "[1] start  -> Start The Server" 
 echo "[2] stop   -> Stop The Server"
 echo "[3] status -> Status Of the Server"
-echo "[4] help  -> Help Menu"
+echo "[4] help   -> Help Menu"
 
 else
 # Error message
 echo "Error..."
 echo "Argument Command Missing..."
 echo "Help Menu"
-echo "[1] start -> Start The Server" 
-echo "[2] stop  -> Stop The Server"
+echo "[1] start  -> Start The Server" 
+echo "[2] stop   -> Stop The Server"
 echo "[3] status -> Status Of the Server"
-echo "[4] help  -> Help Menu"
+echo "[4] help   -> Help Menu"
 fi
