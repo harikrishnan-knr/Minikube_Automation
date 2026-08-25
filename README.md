@@ -16,7 +16,7 @@ The repo bundles the required Minikube install packages, an interactive setup sc
 ## Repository Structure
 
 ```
-Minikube_automation/
+Minikube_Automation/
 ├── setup.sh    # Interactive installer/uninstaller (main entry point)
 ├── kube        # Helper script to start/stop the Minikube cluster
 ├── package/
@@ -38,8 +38,8 @@ Minikube_automation/
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/harikrishnan-knr/Minikube_automation.git
-   cd Minikube_automation
+   git clone https://github.com/harikrishnan-knr/Minikube_Automation.git
+   cd Minikube_Automation
    ```
 
 2. Make the scripts executable:
